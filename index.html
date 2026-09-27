@@ -28,9 +28,6 @@ body {
 
 body {
     background: #111;
-    color: #0f380f;
-
-    font-family: monospace;
 
     display: flex;
     justify-content: center;
@@ -40,10 +37,11 @@ body {
 }
 
 
-/* Nokia-style phone screen */
+/* Centered Nokia-style screen */
 
 .phone {
     background: #555;
+
     padding: 12px;
 
     border-radius: 18px;
@@ -54,7 +52,7 @@ body {
 }
 
 
-/* Game display */
+/* Game screen */
 
 .screen {
     width: 240px;
@@ -64,9 +62,7 @@ body {
 
     border: 5px solid #222;
 
-    image-rendering: pixelated;
-
-    position: relative;
+    border-radius: 4px;
 
     overflow: hidden;
 }
@@ -80,54 +76,6 @@ canvas {
     image-rendering: pixelated;
 }
 
-
-/* Fake Nokia keypad */
-
-.keypad {
-    margin-top: 10px;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 55px);
-
-    gap: 6px;
-
-    justify-content: center;
-}
-
-.key {
-    height: 35px;
-
-    background: #222;
-
-    color: white;
-
-    border-radius: 8px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    font-family: monospace;
-
-    font-weight: bold;
-
-    user-select: none;
-
-    box-shadow:
-        0 3px 0 #111;
-}
-
-.key:active {
-    transform: translateY(2px);
-
-    box-shadow:
-        0 1px 0 #111;
-}
-
 </style>
 </head>
 
@@ -136,55 +84,12 @@ canvas {
 <div class="phone">
 
     <div class="screen">
+
         <canvas
             id="gameCanvas"
             width="240"
             height="320">
         </canvas>
-    </div>
-
-    <div class="keypad">
-
-        <div></div>
-
-        <div class="key"
-             data-key="2">
-            2
-        </div>
-
-        <div></div>
-
-
-        <div class="key"
-             data-key="4">
-            4
-        </div>
-
-        <div class="key"
-             data-key="5">
-            5
-        </div>
-
-        <div class="key"
-             data-key="6">
-            6
-        </div>
-
-
-        <div></div>
-
-        <div class="key"
-             data-key="8">
-            8
-        </div>
-
-        <div></div>
-
-
-        <div class="key"
-             data-key="0">
-            0
-        </div>
 
     </div>
 
@@ -192,7 +97,6 @@ canvas {
 
 
 <script>
-
 
 // ======================================================
 // CANVAS
@@ -243,7 +147,6 @@ function beep(
 ) {
 
     if (!audioContext) return;
-
 
     const oscillator =
         audioContext.createOscillator();
@@ -415,15 +318,12 @@ const map = [
 let player = {
 
     x: 1,
-
     y: 6,
 
     hp: 30,
-
     maxHp: 30,
 
     mp: 10,
-
     maxMp: 10,
 
     level: 1,
@@ -498,11 +398,12 @@ let gameState =
 let message =
     "WELCOME!";
 
-let battleEnemy = null;
+let battleEnemy =
+    null;
 
 
 // ======================================================
-// SAVE GAME
+// SAVE
 // ======================================================
 
 function saveGame() {
@@ -525,13 +426,14 @@ function saveGame() {
     message =
         "GAME SAVED!";
 
+
     menuSound();
 
 }
 
 
 // ======================================================
-// LOAD GAME
+// LOAD
 // ======================================================
 
 function loadGame() {
@@ -556,13 +458,16 @@ function loadGame() {
         JSON.parse(data);
 
 
-    player = save.player;
+    player =
+        save.player;
 
-    enemies = save.enemies;
+    enemies =
+        save.enemies;
 
 
     message =
         "GAME LOADED!";
+
 
     menuSound();
 
@@ -581,36 +486,12 @@ document.addEventListener(
 
         startAudio();
 
-        handleKey(e.key);
+        handleKey(
+            e.key
+        );
 
     }
 );
-
-
-// ======================================================
-// ON-SCREEN BUTTONS
-// ======================================================
-
-document
-    .querySelectorAll(".key")
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                function() {
-
-                    startAudio();
-
-                    handleKey(
-                        this.dataset.key
-                    );
-
-                }
-            );
-
-        }
-    );
 
 
 // ======================================================
@@ -629,7 +510,8 @@ function handleKey(key) {
 
         if (
             key === "5" ||
-            key === "Enter"
+            key === "Enter" ||
+            key === " "
         ) {
 
             startSound();
@@ -672,7 +554,9 @@ function handleKey(key) {
         "BATTLE"
     ) {
 
-        battleInput(key);
+        battleInput(
+            key
+        );
 
         return;
 
@@ -686,7 +570,9 @@ function handleKey(key) {
         "MENU"
     ) {
 
-        menuInput(key);
+        menuInput(
+            key
+        );
 
         return;
 
@@ -700,7 +586,9 @@ function handleKey(key) {
         "PLAYING"
     ) {
 
-        movementInput(key);
+        movementInput(
+            key
+        );
 
     }
 
@@ -719,7 +607,8 @@ function movementInput(key) {
 
 
     if (
-        key === "2"
+        key === "2" ||
+        key === "ArrowUp"
     ) {
 
         dy = -1;
@@ -728,7 +617,8 @@ function movementInput(key) {
 
 
     if (
-        key === "8"
+        key === "8" ||
+        key === "ArrowDown"
     ) {
 
         dy = 1;
@@ -737,7 +627,8 @@ function movementInput(key) {
 
 
     if (
-        key === "4"
+        key === "4" ||
+        key === "ArrowLeft"
     ) {
 
         dx = -1;
@@ -746,15 +637,14 @@ function movementInput(key) {
 
 
     if (
-        key === "6"
+        key === "6" ||
+        key === "ArrowRight"
     ) {
 
         dx = 1;
 
     }
 
-
-    // MENU
 
     if (
         key === "0"
@@ -769,8 +659,6 @@ function movementInput(key) {
 
     }
 
-
-    // ACTION
 
     if (
         key === "5"
@@ -805,7 +693,10 @@ function movementInput(key) {
 // MOVE PLAYER
 // ======================================================
 
-function movePlayer(dx, dy) {
+function movePlayer(
+    dx,
+    dy
+) {
 
     const newX =
         player.x + dx;
@@ -833,7 +724,10 @@ function movePlayer(dx, dy) {
         message =
             "BLOCKED";
 
-        beep(120, 0.05);
+        beep(
+            120,
+            0.05
+        );
 
         return;
 
@@ -847,7 +741,10 @@ function movePlayer(dx, dy) {
         message =
             "TREE";
 
-        beep(120, 0.05);
+        beep(
+            120,
+            0.05
+        );
 
         return;
 
@@ -892,7 +789,7 @@ function movePlayer(dx, dy) {
 
 
 // ======================================================
-// INTERACTION
+// INTERACT
 // ======================================================
 
 function interact() {
@@ -952,7 +849,10 @@ function interact() {
 // FIND ENEMY
 // ======================================================
 
-function getEnemyAt(x, y) {
+function getEnemyAt(
+    x,
+    y
+) {
 
     for (
         const enemy of enemies
@@ -1020,7 +920,9 @@ function findNearbyEnemy() {
 // BATTLE
 // ======================================================
 
-function battleInput(key) {
+function battleInput(
+    key
+) {
 
     if (
         !battleEnemy ||
@@ -1035,8 +937,6 @@ function battleInput(key) {
     }
 
 
-    // Attack
-
     if (
         key === "5"
     ) {
@@ -1047,8 +947,6 @@ function battleInput(key) {
 
     }
 
-
-    // Run
 
     if (
         key === "0"
@@ -1080,17 +978,13 @@ function playerAttack() {
     attackSound();
 
 
-    const damage =
-        player.attack;
-
-
     enemy.hp -=
-        damage;
+        player.attack;
 
 
     message =
         "HIT " +
-        damage;
+        player.attack;
 
 
     if (
@@ -1128,8 +1022,6 @@ function playerAttack() {
 
     }
 
-
-    // Enemy attack
 
     setTimeout(
         function() {
@@ -1177,10 +1069,12 @@ function playerAttack() {
 
 
 // ======================================================
-// EXPERIENCE
+// XP
 // ======================================================
 
-function gainXP(amount) {
+function gainXP(
+    amount
+) {
 
     player.xp +=
         amount;
@@ -1232,9 +1126,9 @@ function gainXP(amount) {
 // MENU
 // ======================================================
 
-function menuInput(key) {
-
-    // 5 = save
+function menuInput(
+    key
+) {
 
     if (
         key === "5"
@@ -1247,8 +1141,6 @@ function menuInput(key) {
     }
 
 
-    // 2 = load
-
     if (
         key === "2"
     ) {
@@ -1259,8 +1151,6 @@ function menuInput(key) {
 
     }
 
-
-    // 0 = exit
 
     if (
         key === "0"
@@ -1285,15 +1175,12 @@ function restartGame() {
     player = {
 
         x: 1,
-
         y: 6,
 
         hp: 30,
-
         maxHp: 30,
 
         mp: 10,
-
         maxMp: 10,
 
         level: 1,
@@ -1312,30 +1199,42 @@ function restartGame() {
         {
             x: 6,
             y: 2,
+
             name: "SLIME",
+
             hp: 12,
             maxHp: 12,
+
             attack: 3,
+
             xp: 5
         },
 
         {
             x: 7,
             y: 5,
+
             name: "GOBLIN",
+
             hp: 18,
             maxHp: 18,
+
             attack: 5,
+
             xp: 10
         },
 
         {
             x: 3,
             y: 3,
+
             name: "BAT",
+
             hp: 10,
             maxHp: 10,
+
             attack: 4,
+
             xp: 7
         }
 
@@ -1360,7 +1259,7 @@ function restartGame() {
 
 
 // ======================================================
-// DRAW TILE MAP
+// DRAW MAP
 // ======================================================
 
 function drawMap() {
@@ -1388,10 +1287,9 @@ function drawMap() {
                 y * TILE;
 
 
-            // Grass
-
             ctx.fillStyle =
                 "#9bbc0f";
+
 
             ctx.fillRect(
                 px,
@@ -1577,8 +1475,6 @@ function drawPlayer() {
         "#fff";
 
 
-    // Head
-
     ctx.fillRect(
         px + 7,
         py + 3,
@@ -1586,8 +1482,6 @@ function drawPlayer() {
         8
     );
 
-
-    // Body
 
     ctx.fillRect(
         px + 5,
@@ -1667,7 +1561,7 @@ function drawStart() {
 
 
     text(
-        "2 8 4 6",
+        "2 4 6 8",
         120,
         145,
         14
@@ -1852,8 +1746,6 @@ function drawBattle() {
     );
 
 
-    // Enemy
-
     ctx.fillStyle =
         "#0f380f";
 
@@ -1905,7 +1797,7 @@ function drawBattle() {
 
 
 // ======================================================
-// MENU SCREEN
+// MENU
 // ======================================================
 
 function drawMenu() {
